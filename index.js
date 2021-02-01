@@ -78,5 +78,11 @@ if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(
    }).catch(console.error)
   }
 });
+	
+bot.on("message", (message) => {
+	if (message.mentions.members.first().id === bot.user.id) {
+		message.author.send("Hello, This bot has no Prefix. If you want invite this bot, Here is it:\nhttps://discord.com/api/oauth2/authorize?client_id="+bot.user.id+"&permissions=268436480&scope=bot")
+	}
+})
 
 bot.login(process.env.TOKEN);
