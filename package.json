@@ -1,0 +1,22 @@
+{
+  "name": "AntiFlood-dcbot",
+  "version": "1.0.0",
+  "description": "A discord bot that muting people who flooding message, Written in Node.js",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yonle/AntiFlood-dcbot.js.git"
+  },
+  "keywords": [],
+  "author": "Yonle",
+  "license": "MIT"
+}
