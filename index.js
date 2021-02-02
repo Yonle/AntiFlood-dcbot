@@ -31,6 +31,7 @@ bot.on("message", async (message) => {
   var guild_info = guild.get(guild_id);
   if (!guild_info) {
    guild.set(guild_id, { user_id: user_id, m_count: 1 });
+   console.log(`[LOGGING] This guild(${guild_id}) isn't monitored. Adding to monitor list....`);
    return;
   }
   var m_count = guild_info.m_count;
@@ -38,15 +39,16 @@ bot.on("message", async (message) => {
 
 if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(["KICK_MEMBERS", "BAN_MEMBERS"]) || message.guild.user === message.author) {
   guild.set(guild_id, { user_id: user_id, m_count: 0 });
-  return console.log("[INFO] Owner Messaging, Cancelling to counting.");
+  return console.log("[INFO] Admin Messaging, Cancelling to counting.");
 }
   guild.set(guild_id, { user_id: user_id, m_count: m_count+1 });
-  console.log("[INFO] Someone messaging, Message Count:"+m_count);
+  console.log(`[INFO] User ${user_id} messaging, Message Count:`, m_count);
   if (guild.get(guild_id).m_count === config.max_msg) {
         	if(!message.guild.me.hasPermission(["MANAGE_ROLES", "ADMINISTRATOR"])) return;
    	let muteRole = message.guild.roles.cache.find(r => r.name === config.muted_roles_name);
-	
+	console.log(`[INFO] Max Message Count in ${guild_id} Reached. Finding Mute roles....`);
 	if(!muteRole) {
+                console.log("[INFO] No Mute Roles in this guild. Creating one...");
 		try {
 			muteRole = await message.guild.roles.create({
 				data: {
@@ -60,7 +62,7 @@ if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(
 			console.log(e.stack);
 		}
 	}
-	
+	console.log("[INFO] Overwritting @Muted roles at every channel....");
 	message.guild.channels.cache.forEach((channel) => {
 		channel.updateOverwrite(muteRole, {
 			"SEND_MESSAGES": false,
@@ -74,6 +76,7 @@ if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(
    // If it's Admin/Moderator, Don't mute
 if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(["KICK_MEMBERS", "BAN_MEMBERS"]) || message.guild.user === message.author) return;
    member.roles.add(muteRole.id).then(() => {
+     console.log(`[INFO] Muted ${user_id}`);
      message.channel.send("Yeah i don't like you flooding,\n**Muted "+message.author.tag+"!!**");
    }).catch(console.error)
   }
