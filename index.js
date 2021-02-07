@@ -1,7 +1,12 @@
-// Configurations 
+// Configurations //
+// This is configuration of AntiFlood Bot. You can modify it as you wish.
+
 const config = {
-  muted_roles_name: "Muted",
-  max_msg: 10
+  muted_roles_name: "Muted", // Muted Roles name.
+  track_userbot: true, // `false` to not tracking userbot. `true` to tracks userbot. Default is `true`.
+  mute_userbot: false, // `false` to not mute userbot, `true` to mute userbot Default is `false`.
+  warn_max_msg: 7, // Warning message limit, Default is 7.
+  max_msg: 10 // Message limit per user, Default is 10.
 };
 
 // Load module and Create Client
@@ -21,6 +26,12 @@ const guild = new Map();
 
 // Listen to Message
 bot.on("message", async (message) => {
+
+  // Now look at config back, If the owner didn't allows "this" bot to track last bots, Do nothing.
+  if (message.author.bot) { if (!track_userbot) return; } 
+
+  // Do not track your own bots.
+  if (message.author.id === bot.user.id)
   // Get user id
   var user_id = message.author.id;
   // Get member information
@@ -34,6 +45,10 @@ bot.on("message", async (message) => {
    console.log(`[LOGGING] This guild(${guild_id}) isn't monitored. Adding to monitor list....`);
    return;
   }
+
+  // If the User ID isn't same as before, Change it.
+  if(guild_info["user_id"] !== user_id) return guild.set(guild_id, { user_id, m_count: 1 });
+
   var m_count = guild_info.m_count;
   // If it's Admin/Moderator, Write it as 0
 
@@ -41,12 +56,19 @@ if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(
   guild.set(guild_id, { user_id: user_id, m_count: 0 });
   return console.log("[INFO] Admin Messaging, Cancelling to counting.");
 }
-  guild.set(guild_id, { user_id: user_id, m_count: m_count+1 });
+  guild.set(guild_id, { user_id: user_id, m_count: m_count++ });
   console.log(`[INFO] User ${user_id} messaging, Message Count:`, m_count);
+  if (guild.get(guild_id).user_id === config.warn_max_msg) { if (!config.mute_userbot) return; message.reply("Your message limit is almost over the message limit per user. If you continue, you may be automatically muted by this bot."); }
   if (guild.get(guild_id).m_count === config.max_msg) {
-        	if(!message.guild.me.hasPermission(["MANAGE_ROLES", "ADMINISTRATOR"])) return;
+        
+        // Now look again your config back, If the owner didn't allows "this" bot to mute last bots, Do nothing.
+        if (message.author.bot) { if (!mute_userbot) return; } 
+
+        // Give a trigger if the bot has no MANAGE_ROLES permission.
+        if(!message.guild.me.hasPermission(["MANAGE_ROLES", "ADMINISTRATOR"])) return;
    	let muteRole = message.guild.roles.cache.find(r => r.name === config.muted_roles_name);
 	console.log(`[INFO] Max Message Count in ${guild_id} Reached. Finding Mute roles....`);
+        // If there's no Muted roles named `Muted`, Create one.
 	if(!muteRole) {
                 console.log("[INFO] No Mute Roles in this guild. Creating one...");
 		try {
