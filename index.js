@@ -56,7 +56,7 @@ if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(
   guild.set(guild_id, { user_id: user_id, m_count: 0 });
   return console.log("[INFO] Admin Messaging, Cancelling to counting.");
 }
-  guild.set(guild_id, { user_id: user_id, m_count: m_count++ });
+  guild.set(guild_id, { user_id: user_id, m_count: m_count+1 });
   console.log(`[INFO] User ${user_id} messaging, Message Count:`, m_count);
   if (guild.get(guild_id).user_id === config.warn_max_msg) { if (message.author.bot) { if (!config.mute_userbot) { return false; } else { return true; } } message.reply("Your message limit is almost over the message limit per user. If you continue, you may be automatically muted by this bot."); }
   if (guild.get(guild_id).m_count === config.max_msg) {
