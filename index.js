@@ -4,7 +4,7 @@
 const config = {
   muted_roles_name: "Muted", // Muted Roles name.
   track_userbot: true, // `false` to not tracking userbot. `true` to tracks userbot. Default is `true`.
-  mute_userbot: false, // `false` to not mute userbot, `true` to mute userbot Default is `false`.
+  mute_userbot: false, // `false` to not mute userbot, `true` to mute userbot. Default is `false`.
   warn_max_msg: 7, // Warning message limit, Default is 7.
   max_msg: 10 // Message limit per user, Default is 10.
 };
