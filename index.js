@@ -27,9 +27,11 @@ const guild = new Map();
 // Listen to Message
 bot.on("message", async (message) => {
 
+  // Do nothing if There's no guild, nd Ignore webhook
+  if (!message.guild || message.webhookID) return;
+
   // Now look at config back, If the owner didn't allows "this" bot to track last bots, Do nothing.
   if (message.author.bot) { if (!config.track_userbot) return; } 
-
   // Do not track your own bots.
   if (message.author.id === bot.user.id) return;
   // Get user id
@@ -110,13 +112,12 @@ if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(
      message.channel.send("Yeah i don't like you flooding,\n**Muted "+message.author.tag+"!!**");
    }).catch(console.error);
   }
+  
+  if (!message.mentions.members.size) return;
+  if (message.mentions.members.first().id === bot.user.id) {
+		message.author.send("Hello, This bot has no Prefix. If you want invite this bot, Here is it:\nhttps://discord.com/api/oauth2/authorize?client_id="+bot.user.id+"&permissions=268438544&scope=bot").catch(console.error);
+	}
 });
 	
-bot.on("message", (message) => {
-  if (!message.mentions.members.first()) return;
-	if (message.mentions.members.first().id === bot.user.id) {
-		message.author.send("Hello, This bot has no Prefix. If you want invite this bot, Here is it:\nhttps://discord.com/api/oauth2/authorize?client_id="+bot.user.id+"&permissions=268436480&scope=bot")
-	}
-})
 
-bot.login(process.env.TOKEN);
+bot.login(process.env.TOKEN).catch(console.error);
