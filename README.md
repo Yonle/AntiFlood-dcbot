@@ -17,7 +17,7 @@ TOKEN=<Your Bot Token>
 In this repo, Bots only need **Manage Roles**, **Manage Channel**, **Read & Send Message** and **View Channel** Permission. But it's recommended to use it on Permission 8 (Administrator)
 
 ## Demo
-Invite the Anti Flood bot: https://discord.com/api/oauth2/authorize?client_id=724490165703147550&permissions=268438544&scope=bot
+Invite AFlood bot: https://discord.com/api/oauth2/authorize?client_id=724490165703147550&permissions=268438544&scope=bot
 
 ## Community
 https://discord.gg/9S3ZCDR
