@@ -14,10 +14,10 @@ TOKEN=<Your Bot Token>
 4. Start your discord anti flood bot by executing `node .`
 
 ## Permission
-In this repo, Bots only need **Manage Roles** and **View Channel** Permission. But it's recommended to use it on Permission 8 (Administrator)
+In this repo, Bots only need **Manage Roles**, **Manage Channel**, **Read & Send Message** and **View Channel** Permission. But it's recommended to use it on Permission 8 (Administrator)
 
 ## Demo
-Invite the Anti Flood bot: https://discord.com/api/oauth2/authorize?client_id=724490165703147550&permissions=268436480&scope=bot
+Invite the Anti Flood bot: https://discord.com/api/oauth2/authorize?client_id=724490165703147550&permissions=268438544&scope=bot
 
 ## Community
 https://discord.gg/9S3ZCDR
