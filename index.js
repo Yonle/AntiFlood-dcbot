@@ -22,7 +22,7 @@ bot.on("ready", () => {
 });
 
 // Create Map
-const guild = new Map();
+const channel = new Map();
 
 // Listen to Message
 bot.on("message", async (message) => {
@@ -39,29 +39,29 @@ bot.on("message", async (message) => {
   // Get member information
   var member = message.member;
   // Get guild id
-  var guild_id = message.guild.id;
+  var channel_id = message.channel.id;
   // Something....
-  var guild_info = guild.get(guild_id);
-  if (!guild_info) {
-   guild.set(guild_id, { user_id: user_id, m_count: 1 });
-   console.log(`[LOGGING] This guild(${guild_id}) isn't monitored. Adding to monitor list....`);
+  var channel_info = channel.get(channel_id);
+  if (!channel_info) {
+   channel.set(channel_id, { user_id: user_id, m_count: 1 });
+   console.log(`[LOGGING] This channel(${channel_id}) isn't monitored. Adding to monitor list....`);
    return;
   }
 
   // If the User ID isn't same as before, Change it.
-  if(guild_info["user_id"] !== user_id) return guild.set(guild_id, { user_id, m_count: 1 });
+  if(channel_info["user_id"] !== user_id) return channel.set(channel_id, { user_id, m_count: 1 });
 
-  var m_count = guild_info.m_count;
+  var m_count = channel_info.m_count;
   // If it's Admin/Moderator, Write it as 0
 
 if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(["KICK_MEMBERS", "BAN_MEMBERS"]) || message.guild.user === message.author) {
-  guild.set(guild_id, { user_id: user_id, m_count: 0 });
+  channel.set(channel_id, { user_id: user_id, m_count: 0 });
   return console.log("[INFO] Admin Messaging, Cancelling to counting.");
 }
-  guild.set(guild_id, { user_id: user_id, m_count: m_count+1 });
+  channel.set(channel_id, { user_id: user_id, m_count: m_count+1 });
   console.log(`[INFO] User ${user_id} messaging, Message Count:`, m_count);
   
-  if (guild.get(guild_id).m_count > config.warn_max_msg) { 
+  if (channel.get(channel_id).m_count === config.warn_max_msg) { 
   	if (message.author.bot) { 
   		if (!config.mute_userbot) { 
   	  	return false; 
@@ -70,7 +70,7 @@ if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(
      message.reply("Your message limit is almost over the message limit per user. If you continue, you may be automatically muted by this bot.").catch(console.error); 
   	}
   }
-  if (guild.get(guild_id).m_count > config.max_msg) {
+  if (channel.get(channel_id).m_count > config.max_msg) {
         
         // Now look again your config back, If the owner didn't allows "this" bot to mute last bots, Do nothing.
         if (message.author.bot) { if (!config.mute_userbot) return; } 
@@ -78,7 +78,7 @@ if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(
         // Give a trigger if the bot has no MANAGE_ROLES permission.
         if(!message.guild.me.hasPermission("MANAGE_ROLES")) return;
    	let muteRole = message.guild.roles.cache.find(r => r.name === config.muted_roles_name);
-	console.log(`[INFO] Max Message Count in ${guild_id} Reached. Finding Mute roles....`);
+	console.log(`[INFO] Max Message Count in ${channel_id} Reached. Finding Mute roles....`);
         // If there's no Muted roles named `Muted`, Create one.
 	if(!muteRole) {
                 console.log("[INFO] No Mute Roles in this guild. Creating one...");
@@ -119,5 +119,5 @@ if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(
 	}
 });
 	
-
-bot.login(process.env.TOKEN).catch(console.error);
+process.on('unhandledRejection', console.error);
+bot.login(process.env.TOKEN);
