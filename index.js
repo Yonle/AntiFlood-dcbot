@@ -27,15 +27,15 @@ const channel = new Map();
 // Listen to Message
 bot.on("message", async (message) => {
 
-  // Do nothing if There's no guild, nd Ignore webhook
-  if (!message.guild || message.webhookID) return;
+  // Do nothing if There's no guild.
+  if (!message.guild) return;
 
   // Now look at config back, If the owner didn't allows "this" bot to track last bots, Do nothing.
-  if (message.author.bot) { if (!config.track_userbot) return; } 
+  if (message.author.bot || message.webhookID ) { if (!config.track_userbot) return; } 
   // Do not track your own bots.
   if (message.author.id === bot.user.id) return;
   // Get user id
-  var user_id = message.author.id;
+  var user_id = message.webhookID || message.author.id;
   // Get member information
   var member = message.member;
   // Get guild id
@@ -54,15 +54,15 @@ bot.on("message", async (message) => {
   var m_count = channel_info.m_count;
   // If it's Admin/Moderator, Write it as 0
 
-if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(["KICK_MEMBERS", "BAN_MEMBERS"]) || message.guild.user === message.author) {
+if(message.member.hasPermission('MANAGE_ROLES') || message.member.hasPermission(["KICK_MEMBERS", "BAN_MEMBERS"]) || message.guild.user === message.author || message.webhookID) {
   channel.set(channel_id, { user_id: user_id, m_count: 0 });
-  return console.log("[INFO] Admin Messaging, Cancelling to counting.");
+  return console.log("[INFO] Webhook/Admin Messaging, Cancelling to counting.");
 }
   channel.set(channel_id, { user_id: user_id, m_count: m_count+1 });
   console.log(`[INFO] User ${user_id} messaging, Message Count:`, m_count);
   
   if (channel.get(channel_id).m_count === config.warn_max_msg) { 
-  	if (message.author.bot) { 
+  	if (message.webhookID || message.author.bot) { 
   		if (!config.mute_userbot) { 
   	  	return false; 
   	  }
